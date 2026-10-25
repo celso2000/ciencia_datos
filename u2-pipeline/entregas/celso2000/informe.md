@@ -20,12 +20,12 @@ Se construyó un pipeline de datos que extrae la lista de usuarios de la API pú
 
 ## Un problema que apareció
 
-Durante la verificación de datos, la segunda consulta de `verificar_datos.py` falló con el error `Parser Error: syntax error at or near "."`. DuckDB mostró la consulta recibida (`LINE 1`) y en ella se observó que `address__city` y `from` habían quedado unidos como `address__cityfrom`, porque se había perdido el espacio entre dos fragmentos de texto concatenados. Se resolvió reescribiendo la consulta con triple comilla, una cláusula por línea, lo que eliminó la dependencia de espacios al final de cada fragmento. Como aprendizaje, se comprobó que el mensaje de error de DuckDB incluye la consulta exacta recibida, lo que facilita ubicar la falla.
+Durante la verificación de datos, la segunda consulta de `verificar_datos.py` falló con el error `Parser Error: syntax error at or near "."`. DuckDB mostró la consulta recibida (`LINE 1`) y en ella se observó que `address__city` y `from` habían quedado unidos como `address__cityfrom`, porque se había perdido el espacio entre dos fragmentos de texto concatenados. Se resolvió reescribiendo la consulta con triple comilla, una cláusula por línea, lo que eliminó la dependencia de espacios al final de cada fragmento. Como aprendizaje, el mensaje de error de DuckDB mostró la consulta exacta recibida, lo que facilitó ubicar la falla.
 
 
 ## Qué haría distinto con más tiempo
 
-Se identificaron dos limitaciones. Primero, `data.duckdb` se crea en el directorio desde donde se ejecuta el script, por lo que depende de correrlo desde la raíz del repositorio; sería más robusto definir la ruta respecto del propio archivo. Segundo, las coordenadas quedaron como texto; con más tiempo se definirían los tipos de las columnas de forma explícita y se agregaría una prueba que cargue datos simulados en una base temporal.
+Se identificaron dos limitaciones. Primero, `data.duckdb` se crea en el directorio desde donde se ejecuta el script, por lo que depende de correrlo desde la raíz del repositorio; sería más robusto definir la ruta respecto del propio archivo. Segundo, las coordenadas quedaron como texto; con más tiempo se definirían los tipos de forma explícita y se agregaría una prueba con una base temporal.
 
 ## Impresiones sobre DuckDB
 
@@ -34,31 +34,17 @@ Este fue el primer contacto con DuckDB y se destacó por su cercanía con el có
 ## Evidencias de ejecución
 
 ```
-@celso2000 ➜ /workspaces/ciencia_datos (u2/celso2000) $ uv run python u2-pipeline/entregas/celso2000/pipeline.py
-warning: `jsonpath-ng==1.9.0` is yanked (reason: "Missing `requires-python` in project metadata")
-Pipeline mi_pipeline load step finished in 0.23 seconds
-1 load package(s) were loaded to destination duckdb and into dataset jsonplaceholder
-The duckdb destination used duckdb:////workspaces/ciencia_datos/data.duckdb location to store data
+$ uv run python u2-pipeline/entregas/celso2000/pipeline.py
 Load package 1792968457.8581371 is LOADED and contains no failed jobs
 
+$ uv run python u2-pipeline/entregas/celso2000/verificar_datos.py
 Usuarios cargados: 10
-Tablas del esquema jsonplaceholder: users, _dlt_loads, _dlt_pipeline_state, _dlt_version
-pytest: 3 passed
 
-@celso2000 ➜ /workspaces/ciencia_datos (u2/celso2000) $ uv run pytest u2-pipeline/entregas/celso2000
-=========================================== test session starts ============================================
-platform linux -- Python 3.12.11, pytest-9.1.1, pluggy-1.6.0
-rootdir: /workspaces/ciencia_datos
-configfile: pyproject.toml
-plugins: anyio-4.15.1, platformdirs-4.12.3
-collected 3 items                                                                                          
-
-u2-pipeline/entregas/celso2000/test_pipeline.py ...                                                  [100%]
-
-============================================ 3 passed in 0.86s =============================================
+$ uv run pytest u2-pipeline/entregas/celso2000
+3 passed in 0.86s
 
 ```
 
 ## Uso de IA
 
-Se utilizó Claude (Anthropic) como asistente durante la unidad: explicó los conceptos paso a paso, propuso la estructura inicial del código y de las pruebas, y colaboró en una primera redacción de este informe. El código se ejecutó, se probó y se corrigió en el entorno propio (se resolvieron errores de sintaxis, de nombres y de SQL), y cada parte fue revisada para poder explicarla.
+Se utilizó Claude (Anthropic) como asistente durante la unidad: explicó los conceptos paso a paso, propuso la estructura inicial del código y de las pruebas, y colaboró en una primera redacción de este informe. El código se ejecutó, se probó y se corrigió en el entorno propio, y cada parte fue revisada para poder explicarla.
